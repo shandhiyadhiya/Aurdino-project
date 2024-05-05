@@ -1,0 +1,191 @@
+//dharshanashankar19@gmail.com
+//Password: dsecm@19
+//blynk password: projectiot2023
+
+#define BLYNK_TEMPLATE_ID "TMPL3Vhk4Wg10"
+#define BLYNK_TEMPLATE_NAME "Agrichatbot"
+#define BLYNK_AUTH_TOKEN "uB8zRw7bF4WD8KkHgu4Y-RN0qEzBbhEl"
+
+
+/* Comment this out to disable prints and save space */
+#define BLYNK_PRINT Serial
+
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+// Your WiFi credentials.
+// Set password to "" for open networks.
+char ssid[] = "projectiot";
+char pass[] = "123456789";
+
+WidgetLCD lcd(V9);
+
+//controlling motor
+BLYNK_WRITE(V5) // forward 
+{
+  // Set incoming value from pin V0 to a variable
+  int value = param.asInt();
+  if (value == 1)
+  {
+     
+     Blynk.virtualWrite(V6,LOW);
+     Blynk.virtualWrite(V7,LOW);
+     Blynk.virtualWrite(V8,LOW);
+     Serial.print('A');
+     delay(100);
+  }
+}
+
+BLYNK_WRITE(V6)// backward
+{
+  // Set incoming value from pin V1 to a variable
+  int value = param.asInt();
+  if (value == 1)
+  {
+     Blynk.virtualWrite(V5,LOW);
+     Blynk.virtualWrite(V7,LOW);
+     Blynk.virtualWrite(V8,LOW);
+     Serial.print('B');
+  delay(100);  
+  }
+}
+
+BLYNK_WRITE(V7)// Stop
+{
+  // Set incoming value from pin V2 to a variable
+  int value = param.asInt();
+  if (value == 1)
+  {
+    Blynk.virtualWrite(V5,LOW);
+    Blynk.virtualWrite(V6,LOW);
+    Blynk.virtualWrite(V8,LOW);
+  Serial.print('C');
+  delay(100);
+  }
+}
+
+BLYNK_WRITE(V8)// Right
+{
+  // Set incoming value from pin V3 to a variable
+  int value = param.asInt();
+  if (value == 1)
+  {
+    Blynk.virtualWrite(V5,LOW);
+     Blynk.virtualWrite(V6,LOW);
+     Blynk.virtualWrite(V7,LOW);
+     
+    Serial.print('D');
+    delay(100);
+   
+  }
+}
+
+
+
+
+//Change the virtual pins according the rooms
+
+ 
+BLYNK_CONNECTED()
+{ 
+  Blynk.syncVirtual(V0);//F
+  Blynk.syncVirtual(V1);//B
+  Blynk.syncVirtual(V2);//S
+  Blynk.syncVirtual(V3);//L
+  Blynk.syncVirtual(V4);//R
+  Blynk.syncVirtual(V5);//T
+  Blynk.syncVirtual(V6);//H
+  Blynk.syncVirtual(V7);//N
+  Blynk.syncVirtual(V8);//P
+  Blynk.syncVirtual(V9);//K
+}
+
+
+void setup()
+{
+  // Debug console
+  Serial.begin(9600);
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+  // You can also specify server:
+  //Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, "blynk.cloud", 80);
+  //Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass, IPAddress(192,168,1,100), 8080);
+     Blynk.virtualWrite(V0,LOW);
+     Blynk.virtualWrite(V1,LOW);
+     Blynk.virtualWrite(V2,LOW);
+     Blynk.virtualWrite(V3,LOW);
+     Blynk.virtualWrite(V4,LOW);
+
+
+  
+}
+
+void loop()
+{
+  Blynk.run();
+
+  if (Serial.available()>0) 
+  {
+  char a=Serial.read();
+  //Serial.print(a);
+
+
+
+
+
+  
+
+    if(a=='T')
+    {  
+      int  d=Serial.parseInt(); 
+      Blynk.virtualWrite(V3,d); 
+      
+      if(d>50)
+      {      
+      lcd.print(0,1,"Temperature: H   ");
+      }
+      else
+      {
+        lcd.print(0,1,"Temperature: L   ");
+        }
+    }
+
+
+    
+    if(a=='H')
+    {  
+      int  d=Serial.parseInt(); 
+      Blynk.virtualWrite(V4,d); 
+      if(d>50)
+      {      
+      lcd.print(0,0,"Humitity:HIGH");
+      }
+      else
+      {
+        lcd.print(0,0,"Humitity:LOW");
+        }
+     
+
+      
+    }    
+    if(a=='N')
+    {  
+      int  d=Serial.parseInt(); 
+      Blynk.virtualWrite(V0,d); 
+    }    
+    if(a=='P')
+    {  
+      int  d=Serial.parseInt(); 
+      Blynk.virtualWrite(V1,d); 
+    }    
+    if(a=='K')
+    {  
+      int  d=Serial.parseInt(); 
+      Blynk.virtualWrite(V2,d); 
+    }                    
+
+    
+
+ } 
+
+}
